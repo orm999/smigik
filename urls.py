@@ -1,10 +1,14 @@
 from django.conf.urls.defaults import *
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+#from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = staticfiles_urlpatterns()
+
+urlpatterns += patterns( '',
     # Example:
     # (r'^smigik2/', include('smigik2.foo.urls')),
 
@@ -13,4 +17,10 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
-)
+#    ( r'^user_info/', include( 'user_info.urls' ) ),
+    ( r'^dev_info/', include( 'dev_info.urls' ) ),
+ )
+
+#if settings.DEBUG:
+#    urlpatterns += patterns( 'django.contrib.staticfiles.views',
+#                            url( r'^static/(?P<path>.*)$', 'serve' ) )

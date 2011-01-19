@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<select>
+	<option value="input_dev">Устройство ввода</option>
+	<option value="output_dev">Устройство вывода</option>
+</select>
+{% if input_devs_list %}
+	<table>
+	{% for dev in input_devs_list %}
+		<tr>
+			<td>Номер устройства: </td>
+			<td>{{ dev.dev_id }}</td>
+		</tr>
+		<tr>
+			<td>Модель: </td>
+			<td>{{ dev.model }} </td>
+		</tr>
+		<tr>
+			<td>Дата начала эксплуатации: </td>
+			<td>{{ dev.expl_start_date }} </td>
+		</tr>
+		<tr>
+			<td>Режим сканирования: </td>
+			<td>{{ dev.scan_mode }} </td>
+		</tr>
+		<tr>
+			<td><a href="/dev_info/input/{{dev.dev_id}}/edit">Редактировать</a></td>
+		</tr>
+	{% endfor %}
+	</table>
+{% endif %}				
+<a href="/dev_info/add">Добавить устройство</a>
+{% endblock %}
