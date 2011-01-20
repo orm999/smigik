@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script type="text/javascript">
+	var input_dev_list = {{ input_dev_list }};
+</script>
+<select id="devs">
+	<option value="input">Устройство ввода</option>
+	<option value="output">Устройство вывода</option>
+</select>
+<a href="/dev_info/add">Добавить</a>
+<br />
+<br />
+<div id="dev_list">
+</div>	
+<br />
+<a href="/dev_info/input/1/edit">Редактировать</a>
+|
+<a href="/dev_info/input/remove">Удалить</a>
+<br />
+{% endblock %}

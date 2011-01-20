@@ -10,8 +10,8 @@ from dev_info.models import InputDev, OutputDev
 devices_info = {
     'queryset': InputDev.objects.all(),
     'template_name': 'dev_info/base_dev_info.html',
-    'template_object_name': 'input_devs',
-    'extra_context': {'output_devs': OutputDev.objects.all()}
+    'template_object_name': 'input_dev',
+    'extra_context': {'output_dev_list': OutputDev.objects.all()}
 }
 
 urlpatterns = patterns( 'dev_info.views',
@@ -23,7 +23,7 @@ urlpatterns = patterns( 'dev_info.views',
 
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
-    ( r'^$', list_detail.object_list, devices_info ),
+    ( r'^$', 'info' ),
     ( r'^add/$', 'add' ),
     ( r'^(?P<type>(input|output))/(?P<dev_id>\d+)/edit/$', 'edit' ),
     ( r'^(?P<type>(input|output))/(?P<dev_id>\d+)/updated/$', 'updated' )

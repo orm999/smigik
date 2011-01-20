@@ -1,4 +1,6 @@
+# -*- coding: utf -*-
 from django.db import models
+from django.forms import ModelForm
 
 class InputDev( models.Model ):
     dev_id = models.AutoField( primary_key=True )
