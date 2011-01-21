@@ -9,7 +9,7 @@ class InputDev( models.Model ):
     scan_mode = models.CharField( max_length=255 )
 
     class Meta:
-        ordering = ['dev_id']
+        ordering = ['-dev_id']
 
 class OutputDev( models.Model ):
     dev_id = models.AutoField( primary_key=True )
@@ -19,4 +19,4 @@ class OutputDev( models.Model ):
     print_mode = models.CharField( max_length=255 )
 
     class Meta:
-        ordering = ['dev_id']
+        ordering = ['-dev_id']

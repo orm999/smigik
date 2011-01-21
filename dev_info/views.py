@@ -1,32 +1,46 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, QueryDict
 from django.core.context_processors import csrf
 from django.shortcuts import render_to_response
+from django.template.loader import render_to_string
+from django.utils import simplejson
 
 from dev_info.models import InputDev, OutputDev
 from dev_info.models import OutputDev
 
 from dev_info.forms import InputDevForm, OutputDevForm
 
+def xhr_test( request ):
+    if request.is_ajax():
+        message = "Hello AJAX"
+    else:
+        message = "Hi"
+    return HttpResponse( message )
+
 def info( request ):
     if request.is_ajax():
         input_dev_list = InputDev.objects.all()
         output_dev_list = OutputDev.objects.all()
         type = request.GET.get( 'type', 'input' )
-        return render_to_response( 'dev_info/_dev_list.html',
+        html = render_to_string( 'dev_info/_list.html',
             {'type': type, 'input_dev_list': input_dev_list, 'output_dev_list': output_dev_list}
         )
+        response = simplejson.dumps( {'success': 'True', 'html': html} )
+        return HttpResponse( response, content_type="application/javascript" )
     else:
         return render_to_response( 'dev_info/base_dev_info.html' )
 
 def add( request ):
-    type = 'input'
+    c = csrf( request )
     if request.method == 'POST':
+        type = request.POST.get( 'type', 'input' )
+        post_form = QueryDict( request.POST.get( 'form', '' ) )
         if type == 'input':
-            form = InputDevForm( request.POST )
+            form = InputDevForm( post_form )
         elif type == 'output':
-            form = OutputDevForm( request.POST )
+            form = OutputDevForm( post_form )
 
         if form.is_valid():
+            print( 'form is valid' )
             cd = form.cleaned_data
             if type == 'input':
                 dev = InputDev( model=cd['model'],
@@ -38,17 +52,26 @@ def add( request ):
                                 cartridge_id=cd['cartridge_id'],
                                 print_mode=cd['print_mode'] )
             dev.save()
-            print( dev.dev_id )
-            return HttpResponseRedirect( '/dev_info/' )
+            c.update( {'type': type, 'dev': dev} )
+            html = render_to_string( 'dev_info/_info.html', c )
+            response = simplejson.dumps( {'success': 'True', 'html': html} )
+        else:
+            html = form.errors.as_ul()
+            response = simplejson.dumps( {'success': 'False', 'html': html} )
     else:
+        type = request.GET.get( 'type', 'input' )
         if type == 'input':
             form = InputDevForm()
         elif type == 'output':
             form = OutputDevForm()
+        html = render_to_string( 'dev_info/_add.html', {'form': form} )
+        response = simplejson.dumps( {'success': 'True', 'html': html} )
 
-    c = {'form': form}
-    c.update( csrf( request ) )
-    return render_to_response( 'dev_info/base_dev_info_add.html', c )
+    if request.is_ajax():
+        return HttpResponse( response, content_type="application/javascript" )
+    else:
+        c.update( {'form': form} )
+        return render_to_response( 'dev_info/base_dev_info_add.html', c )
 
 def edit( request, type, dev_id ):
     if request.method == 'POST':
