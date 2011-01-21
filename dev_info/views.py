@@ -73,12 +73,17 @@ def add( request ):
         c.update( {'form': form} )
         return render_to_response( 'dev_info/base_dev_info_add.html', c )
 
-def edit( request, type, dev_id ):
+def edit( request ):
+    c = csrf( request )
     if request.method == 'POST':
+        type = request.POST.get( 'type', 'input' )
+        dev_id = request.POST.get( 'dev_id' )
+        post_form = QueryDict( request.POST.get( 'form', '' ) )
+        print( type, dev_id, post_form )
         if type == 'input':
-            form = InputDevForm( request.POST )
+            form = InputDevForm( post_form )
         elif type == 'output':
-            form = OutputDevForm( request.POST )
+            form = OutputDevForm( post_form )
 
         if form.is_valid():
             cd = form.cleaned_data
@@ -94,28 +99,40 @@ def edit( request, type, dev_id ):
                 dev.cartridge_id = cd['cartridge_id']
                 dev.print_mode = cd['print_mode']
             dev.save()
-            return HttpResponseRedirect( '/dev_info/{0}/{1}/updated/'.format( type, dev_id ) )
+            c.update( {'type': type, 'dev': dev} )
+            html = render_to_string( 'dev_info/_info.html', c )
+            response = simplejson.dumps( {'success': 'True', 'html': html} )
+        else:
+            html = form.errors.as_ul()
+            response = simplejson.dumps( {'success': 'False', 'html': html} )
     else:
-        if type == 'input':
-            try:
+        type = request.GET.get( 'type', 'input' )
+        dev_id = request.GET.get( 'dev_id' )
+        if dev_id:
+            if type == 'input':
                 dev = InputDev.objects.get( dev_id=dev_id )
                 form = InputDevForm( 
                     initial={'model': dev.model, 'expl_start_date': dev.expl_start_date, 'scan_mode': dev.scan_mode}
                 )
-            except InputDev.DoesNotExist:
-                return HttpResponseRedirect( '/dev_info/' )
-        elif type == 'output':
-            try:
+            elif type == 'output':
                 dev = OutputDev.objects.get( dev_id=dev_id )
                 form = OutputDevForm( 
                     initial={'model': dev.model, 'expl_start_date': dev.expl_start_date, 'cartridge_id': dev.cartridge_id, 'print_mode': dev.print_mode}
                 )
-            except OutputDev.DoesNotExist:
-                return HttpResponseRedirect( '/dev_info/' )
+        else:
+            return HttpResponseRedirect( '/dev_info/' )
+        html = render_to_string( 'dev_info/_edit.html', {'form': form} )
+        response = simplejson.dumps( {'success': 'True', 'html': html} )
 
-    c = {'form': form}
-    c.update( csrf( request ) )
-    return render_to_response( 'dev_info/base_dev_info_edit.html', c )
+    if request.is_ajax():
+        return HttpResponse( response, content_type="application/javascript" )
+    else:
+        c.update( {'form': form} )
+        return render_to_response( 'dev_info/base_dev_info_edit.html', c )
+
+#    c = {'form': form}
+#    c.update( csrf( request ) )
+#    return render_to_response( 'dev_info/base_dev_info_edit.html', c )
 
 def updated( request, type, dev_id ):
     if type == 'input':

@@ -1,17 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-<a id="add" href="">Добавить</a>
-|
-<a id="edit" href="">Редактировать</a>
-|
-<a id="remove" href="">Удалить</a>
-<br />
-<br />
 <select id="dev_select">
 	<option value="input">Устройство ввода</option>
 	<option value="output">Устройство вывода</option>
 </select>
+<a id="add" href="">Добавить</a>
+|
+<a id="remove" href="">Удалить</a>
 <div id="display">
 </div>	
 {% endblock %}
