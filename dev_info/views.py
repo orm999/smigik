@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.http import HttpResponse, HttpResponseRedirect, QueryDict
 from django.core.context_processors import csrf
 from django.shortcuts import render_to_response
@@ -133,6 +134,29 @@ def edit( request ):
 #    c = {'form': form}
 #    c.update( csrf( request ) )
 #    return render_to_response( 'dev_info/base_dev_info_edit.html', c )
+
+def delete( request ):
+    if request.method == 'POST':
+        type = request.POST.get( 'type' )
+        dev_id = request.POST.get( 'dev_id' )
+        if dev_id:
+            if type == 'input':
+                try:
+                    InputDev.objects.get( dev_id=dev_id ).delete()
+                    response = 'Устройство ввода №{0} удалено'.format( dev_id )
+                except:
+                    response = 'Не удалось удалить устройство ввода №{0}'.format( dev_id )
+            else:
+                try:
+                    OutputDev.objects.get( dev_id=dev_id ).delete()
+                    response = 'Устройство вывода №{0} удалено'.format( dev_id )
+                except:
+                    response = 'Не удалось удалить устройство вывода №{0}'.format( dev_id )
+
+    if request.is_ajax():
+        return HttpResponse( response )
+    else:
+        return HttpResponseRedirect( '/dev_info/' )
 
 def updated( request, type, dev_id ):
     if type == 'input':

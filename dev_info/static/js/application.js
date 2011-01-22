@@ -64,49 +64,67 @@ function getDevList() {
 		if (data.success) {
 			$("#display").html(data.html);
 			
-			$("input.input#all").change(function(e) {
-				if ($("input.input#all").is(":checked")) {
-					$("input.input").each(function(i) {
+			$("input#all").change(function() {
+				if ($("input#all").is(":checked")) {
+					$("input").each(function(i) {
 						$(this).attr("checked", "yes");
 					});
 				} else {
-					$("input.input").each(function(i) {
+					$("input").each(function() {
 						$(this).removeAttr("checked");
 					});
 				};
 			});
 			
-			$("a.input.edit").click(function () {
+			$("a.edit").click(function () {
 				var id = $(this).attr("id");
-				$.getJSON("/dev_info/edit/", {"type": "input", "dev_id": id}, function(data) {
-					if (data.success == "True") {
-						$("#display").html(data.html);
-						
-						$("#edit_dev").submit(function(e) {
-							var form = $(e.target);
-							$.post("/dev_info/edit/", {"type": type, "dev_id": id, "form": form.serialize()},
-								function(data) {
-									if (data.success == "True") {
-										$("#display").html(data.html);
-										
-										$("a#dev_info").click(function() {
-											getDevList();
-											return false;
-										});
-									} else {
-										$("#edit_errors").html(data.html);
-									}
-							}, "json");
-							
-							return false;
-						});
+				var type = $("#dev_select option:selected").val();
+				$.getJSON("/dev_info/edit/", 
+					{"type": type, "dev_id": id}, 
+					function(data) {
+						if (data.success == "True") {
+							$("#display").html(data.html);
+	
+							$("#edit_dev").submit(function(e) {
+								var form = $(e.target);
+								$.post("/dev_info/edit/", 
+									{"type": type, "dev_id": id, "form": form.serialize()},
+									function(data) {
+										if (data.success == "True") {
+											$("#display").html(data.html);
+											
+											$("a#dev_info").click(function() {
+												getDevList();
+												return false;
+											});
+										} else {
+											$("#edit_errors").html(data.html);
+										}
+								}, "json");
+								
+								return false;
+							});
 
-						$("a#cancel_add").click(function() {
-							getDevList();					
-							return false;
-						});
+							$("a#cancel_add").click(function() {
+								getDevList();					
+								return false;
+							});
 					};
 				});
+				
+				return false;
+			});
+			
+			$("a.delete").click(function() {
+				var id = $(this).attr("id");
+				var type = $("#dev_select option:selected").val();
+				$.post("/dev_info/delete/", 
+					{"type": type, "dev_id": id},
+					function(data) {
+						$("#notice").html(data).hide().show("slow").delay(2000).hide("slow");
+						$("tr#" + id).fadeOut(1000);
+					}
+				);
 				
 				return false;
 			});

@@ -26,6 +26,7 @@ urlpatterns = patterns( 'dev_info.views',
     ( r'^$', 'info', {}, 'dev_info' ),
     ( r'^add/$', 'add', {}, 'dev_info_add' ),
     ( r'^edit/$', 'edit', {}, 'dev_info_edit' ),
+    ( r'^delete/$', 'delete', {}, 'dev_info_delete' ),
     ( r'^xhr_test/$', 'xhr_test' ),
 #    ( r'^(?P<type>(input|output))/(?P<dev_id>\d+)/updated/$', 'updated' )
  )
