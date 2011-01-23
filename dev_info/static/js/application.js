@@ -37,9 +37,7 @@ $(document).ready(function() {
 								$("form#add_dev").hide(gAnimationSpeed).queue(function() {
 									$(this).remove();
 								});
-								$("#notice").html(data.notice).hide()
-									.show(gAnimationSpeed).delay(gShowNoticeTime)
-									.hide(gAnimationSpeed);
+								$.noticeAdd({text: data.notice});
 								$("table#" + type + "_dev tbody tr:first").after(data.row);
 								var id = $(data.row).attr("id");
 								$("tr#" + id).fadeOut(gAnimationSpeedSlow)
@@ -66,14 +64,17 @@ $(document).ready(function() {
 		return false;
 	});
 	
-	$("a#remove").click(function() {
-		$("#display").each(function(i) {
-			alert($(this).html());
+	$("a#deleteChecked").click(function() {
+		$("input:checkbox:checked").each(function(i) {
+			var id = $(this).attr("id");
+			if (id != "all") {
+				setTimeout(function() {$("tr#" + id + " a.delete").click();}, 500);
+			};
 		});
+		$("input#all:checkbox").removeAttr("checked");
 		
 		return false;
 	});
-	
 });
 
 function getDevList() {
@@ -85,13 +86,13 @@ function getDevList() {
 			} 
 			$("#display").append(data.html);
 
-			$("input#all").change(function() {
-				if ($("input#all").is(":checked")) {
-					$("input").each(function(i) {
+			$("input#all:checkbox").change(function() {
+				if ($("input#all:checkbox").is(":checked")) {
+					$("input:checkbox").each(function(i) {
 						$(this).attr("checked", "yes");
 					});
 				} else {
-					$("input").each(function() {
+					$("input:checkbox").each(function() {
 						$(this).removeAttr("checked");
 					});
 				};
@@ -129,9 +130,7 @@ function actionAddEdit() {
 									$("form#edit_dev").hide(gAnimationSpeed).queue(function() {
 										$(this).remove();
 									});
-									$("#notice").html(data.notice).hide()
-										.show(gAnimationSpeed).delay(gShowNoticeTime)
-										.hide(gAnimationSpeed);
+									$.noticeAdd({text: data.notice});
 									$("tr#" + id).replaceWith(data.row);
 									$("tr#" + id).fadeOut(gAnimationSpeedSlow)
 										.fadeIn(gAnimationSpeedSlow);
@@ -170,8 +169,6 @@ function actionAddEdit() {
 			{"type": type, "dev_id": id},
 			function(data) {
 				$.noticeAdd({text: data});
-//				$("#notice").html(data).hide().show(gAnimationSpeed).delay(gShowNoticeTime)
-//					.fadeOut(gAnimationSpeed);
 				$("tr#" + id).fadeOut(gAnimationSpeed);
 			}
 		);

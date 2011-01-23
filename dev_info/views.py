@@ -149,13 +149,15 @@ def delete( request ):
                 try:
                     InputDev.objects.get( dev_id=dev_id ).delete()
                     response = 'Устройство ввода №{0} удалено'.format( dev_id )
-                except:
+                except Exception as e:
+                    print( e )
                     response = 'Не удалось удалить устройство ввода №{0}'.format( dev_id )
             else:
                 try:
                     OutputDev.objects.get( dev_id=dev_id ).delete()
                     response = 'Устройство вывода №{0} удалено'.format( dev_id )
-                except:
+                except Exception as e:
+                    print( e )
                     response = 'Не удалось удалить устройство вывода №{0}'.format( dev_id )
 
     if request.is_ajax():
