@@ -46,34 +46,17 @@ def add( request ):
                 dev = InputDev( model=cd['model'],
                                expl_start_date=cd['expl_start_date'],
                                scan_mode=cd['scan_mode'] )
-                dev.save()
-                row = '''<tr id="{0}">
-                    <td><input id="{0}" class="input" type="checkbox"></input></td>
-                    <td>{0}</td>
-                    <td>{1}</td>
-                    <td>{2}</td>
-                    <td>{3}</td>
-                    <td><a href="" id="{0}" class="input edit">Редактировать</a>
-                    <a href="" id="{0}" class="input delete">Удалить</a></td>
-                </tr>'''.format( dev.dev_id, dev.model, dev.expl_start_date, dev.scan_mode )
             elif type == 'output':
                 dev = OutputDev( model=cd['model'],
                                 expl_start_date=cd['expl_start_date'],
                                 cartridge_id=cd['cartridge_id'],
                                 print_mode=cd['print_mode'] )
-                dev.save()
-                row = '''<tr id="{0}">
-                    <td><input id="{0}" class="output" type="checkbox"></input></td>
-                    <td>{0}</td>
-                    <td>{1}</td>
-                    <td>{2}</td>
-                    <td>{3}</td>
-                    <td>{4}</td>
-                    <td><a href="" id="{0}" class="output edit">Редактировать</a>
-                    <a href="" id="{0}" class="output delete">Удалить</a></td>
-                </tr>'''.format( dev.dev_id, dev.model, dev.expl_start_date, dev.cartridge_id, dev.print_mode )
-            print( row )
-            notice = 'Устройство №{0} было добавлено'.format( dev )
+            dev.save()
+            if type == 'input':
+                row = getInputRow( dev )
+            elif type == 'output':
+                row = getOutputRow( dev )
+            notice = 'Устройство №{0} было добавлено'.format( dev.dev_id )
             response = simplejson.dumps( {'success': 'True', 'notice': notice, 'row': row} )
         else:
             errors = form.errors.as_ul()
@@ -119,12 +102,15 @@ def edit( request ):
                 dev.cartridge_id = cd['cartridge_id']
                 dev.print_mode = cd['print_mode']
             dev.save()
-            c.update( {'type': type, 'dev': dev} )
-            html = render_to_string( 'dev_info/_info.html', c )
-            response = simplejson.dumps( {'success': 'True', 'html': html} )
+            if type == 'input':
+                row = getInputRow( dev )
+            elif type == 'output':
+                row = getOutputRow( dev )
+            notice = 'Данные об устройство №{0} были изменены'.format( dev.dev_id )
+            response = simplejson.dumps( {'success': 'True', 'notice': notice, 'row': row} )
         else:
-            html = form.errors.as_ul()
-            response = simplejson.dumps( {'success': 'False', 'html': html} )
+            errors = form.errors.as_ul()
+            response = simplejson.dumps( {'success': 'False', 'errors': errors} )
     else:
         type = request.GET.get( 'type', 'input' )
         dev_id = request.GET.get( 'dev_id' )
@@ -183,3 +169,28 @@ def updated( request, type, dev_id ):
     elif type == 'output':
         dev = OutputDev.objects.get( dev_id=dev_id )
     return render_to_response( 'dev_info/base_dev_info_updated.html', {'type': type, 'dev': dev} )
+
+def getInputRow( dev ):
+    row = '''<tr id="{0}">
+                 <td><input id="{0}" class="input" type="checkbox"></input></td>
+                 <td>{0}</td>
+                 <td>{1}</td>
+                 <td>{2}</td>
+                 <td>{3}</td>
+                 <td><a href="" id="{0}" class="input edit">Редактировать</a>
+                 <a href="" id="{0}" class="input delete">Удалить</a></td>
+             </tr>'''.format( dev.dev_id, dev.model, dev.expl_start_date, dev.scan_mode )
+    return row
+
+def getOutputRow( dev ):
+    row = '''<tr id="{0}">
+                 <td><input id="{0}" class="output" type="checkbox"></input></td>
+                 <td>{0}</td>
+                 <td>{1}</td>
+                 <td>{2}</td>
+                 <td>{3}</td>
+                 <td>{4}</td>
+                 <td><a href="" id="{0}" class="output edit">Редактировать</a>
+                 <a href="" id="{0}" class="output delete">Удалить</a></td>
+             </tr>'''.format( dev.dev_id, dev.model, dev.expl_start_date, dev.cartridge_id, dev.print_mode )
+    return row
