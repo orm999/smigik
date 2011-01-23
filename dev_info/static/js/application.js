@@ -1,7 +1,11 @@
 $(document).ready(function() {
 	$("#dev_select").change(function() {
 		if ($("#display form#add_dev").length > 0) {
-			$("a#add").click();
+			$("form#add_dev").hide(500).delay(500).queue(function() {
+				$(this).remove();
+				$("a#add").click();
+				getDevList();
+			});
 		} else {
 			getDevList();
 		}
@@ -12,21 +16,25 @@ $(document).ready(function() {
 		var type = $("#dev_select option:selected").val();
 		$.getJSON("/dev_info/add/", {"type": type}, function(data) {
 			if (data.success == "True") {
-				$("#display").html(data.html);
+				if ($("#display form#add_dev").length == 0) {
+					$("#display").prepend(data.html);
+					$("form#add_dev").hide().show(500);
+				} else {
+					clear_form_elements($("form#add_dev"));
+				};
 
 				$("#add_dev").submit(function(e) {
 					var form = $(e.target);
 					$.post("/dev_info/add/", {"type": type, "form": form.serialize()},
 						function(data) {
 							if (data.success == "True") {
-								$("#display").html(data.html);
-								
-								$("a#dev_info").click(function() {
-									getDevList();
-									return false;
+								$("form#add_dev").hide(1000).delay(1000).queue(function() {
+									$(this).remove();
 								});
+								$("#notice").html(data.notice).hide().show("slow").delay(2000).hide("slow");
+								$("table#" + type + "_dev tbody tr:first").after(data.row).hide().show("slow");
 							} else {
-								$("#add_errors").html(data.html);
+								$("#add_errors").html(data.errors).hide().show("slow");
 							}
 					}, "json");
 					
@@ -62,8 +70,11 @@ function getDevList() {
 	var type = $("#dev_select option:selected").val();
 	$.getJSON("/dev_info/", { 'type': type }, function(data) {
 		if (data.success) {
-			$("#display").html(data.html);
-			
+			if ($("#dev_list").length > 0) {
+				$("#dev_list").remove();
+			} 
+			$("#display").append(data.html);
+
 			$("input#all").change(function() {
 				if ($("input#all").is(":checked")) {
 					$("input").each(function(i) {
@@ -83,22 +94,27 @@ function getDevList() {
 					{"type": type, "dev_id": id}, 
 					function(data) {
 						if (data.success == "True") {
-							$("#display").html(data.html);
-	
+							if ($("#display form#edit_dev").length == 0) {
+								$("#display").prepend(data.html);
+								$("form#edit_dev").hide().show(500);
+							} else {
+								$("#display form#edit_dev").remove();
+								$("#display").prepend(data.html);
+							};
+							
 							$("#edit_dev").submit(function(e) {
 								var form = $(e.target);
 								$.post("/dev_info/edit/", 
 									{"type": type, "dev_id": id, "form": form.serialize()},
 									function(data) {
 										if (data.success == "True") {
-											$("#display").html(data.html);
-											
-											$("a#dev_info").click(function() {
-												getDevList();
-												return false;
+											$("form#edit_dev").hide(1000).delay(1000).queue(function() {
+												$(this).remove();
 											});
+											$("#notice").html(data.notice).hide().show("slow").delay(2000).hide("slow");
+											$("table#" + type + "_dev tbody tr:first").after(data.row).hide().show("slow");
 										} else {
-											$("#edit_errors").html(data.html);
+											$("#add_errors").html(data.errors).hide().show("slow");
 										}
 								}, "json");
 								
@@ -131,3 +147,20 @@ function getDevList() {
 		};
 	});
 };
+
+function clear_form_elements(ele) {
+    $(ele).find(':input').each(function() {
+        switch(this.type) {
+            case 'password':
+            case 'select-multiple':
+            case 'select-one':
+            case 'text':
+            case 'textarea':
+                $(this).val('');
+                break;
+            case 'checkbox':
+            case 'radio':
+                this.checked = false;
+        }
+    });
+}

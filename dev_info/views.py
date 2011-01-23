@@ -41,24 +41,43 @@ def add( request ):
             form = OutputDevForm( post_form )
 
         if form.is_valid():
-            print( 'form is valid' )
             cd = form.cleaned_data
             if type == 'input':
                 dev = InputDev( model=cd['model'],
                                expl_start_date=cd['expl_start_date'],
                                scan_mode=cd['scan_mode'] )
+                dev.save()
+                row = '''<tr id="{0}">
+                    <td><input id="{0}" class="input" type="checkbox"></input></td>
+                    <td>{0}</td>
+                    <td>{1}</td>
+                    <td>{2}</td>
+                    <td>{3}</td>
+                    <td><a href="" id="{0}" class="input edit">Редактировать</a>
+                    <a href="" id="{0}" class="input delete">Удалить</a></td>
+                </tr>'''.format( dev.dev_id, dev.model, dev.expl_start_date, dev.scan_mode )
             elif type == 'output':
                 dev = OutputDev( model=cd['model'],
                                 expl_start_date=cd['expl_start_date'],
                                 cartridge_id=cd['cartridge_id'],
                                 print_mode=cd['print_mode'] )
-            dev.save()
-            c.update( {'type': type, 'dev': dev} )
-            html = render_to_string( 'dev_info/_info.html', c )
-            response = simplejson.dumps( {'success': 'True', 'html': html} )
+                dev.save()
+                row = '''<tr id="{0}">
+                    <td><input id="{0}" class="output" type="checkbox"></input></td>
+                    <td>{0}</td>
+                    <td>{1}</td>
+                    <td>{2}</td>
+                    <td>{3}</td>
+                    <td>{4}</td>
+                    <td><a href="" id="{0}" class="output edit">Редактировать</a>
+                    <a href="" id="{0}" class="output delete">Удалить</a></td>
+                </tr>'''.format( dev.dev_id, dev.model, dev.expl_start_date, dev.cartridge_id, dev.print_mode )
+            print( row )
+            notice = 'Устройство №{0} было добавлено'.format( dev )
+            response = simplejson.dumps( {'success': 'True', 'notice': notice, 'row': row} )
         else:
-            html = form.errors.as_ul()
-            response = simplejson.dumps( {'success': 'False', 'html': html} )
+            errors = form.errors.as_ul()
+            response = simplejson.dumps( {'success': 'False', 'errors': errors} )
     else:
         type = request.GET.get( 'type', 'input' )
         if type == 'input':
