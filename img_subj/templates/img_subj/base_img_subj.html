@@ -1,0 +1,16 @@
+{% extends "base_img.html" %}
+
+{% block content %}
+<noscript>
+Для корректной работы необходимо включить поддержку JavaScript.<br />
+</noscript>
+<form id="save_subj" action="" method="post">
+	<select id="subj_select">
+		<option>dsf</option>
+		<option>sdfdsf</option>
+	</select>
+	<table>
+		{{ form.as_table }}
+	</table>
+</form>
+{% endblock %}
