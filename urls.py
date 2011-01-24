@@ -19,6 +19,7 @@ urlpatterns += patterns( '',
     # (r'^admin/', include(admin.site.urls)),
 #    ( r'^user_info/', include( 'user_info.urls' ) ),
     ( r'^dev_info/', include( 'dev_info.urls' ) ),
+    ( r'^img_subj/', include( 'img_subj.urls' ) ),
  )
 
 #if settings.DEBUG:

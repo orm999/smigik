@@ -1,23 +1,14 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse, HttpResponseRedirect, QueryDict
-from django.core.context_processors import csrf
+from django.http import HttpResponse, QueryDict
 from django.shortcuts import render_to_response
+from django.core.context_processors import csrf
 from django.template.loader import render_to_string
 from django.utils import simplejson
 
 from dev_info.models import InputDev, OutputDev
-from dev_info.models import OutputDev
-
 from dev_info.forms import InputDevForm, OutputDevForm
 
-def xhr_test( request ):
-    if request.is_ajax():
-        message = "Hello AJAX"
-    else:
-        message = "Hi"
-    return HttpResponse( message )
-
-def info( request ):
+def index( request ):
     if request.is_ajax():
         input_dev_list = InputDev.objects.all()
         output_dev_list = OutputDev.objects.all()
@@ -72,9 +63,6 @@ def add( request ):
 
     if request.is_ajax():
         return HttpResponse( response, content_type="application/javascript" )
-    else:
-        c.update( {'form': form} )
-        return render_to_response( 'dev_info/base_dev_info_add.html', c )
 
 def edit( request ):
     c = csrf( request )
@@ -132,13 +120,6 @@ def edit( request ):
 
     if request.is_ajax():
         return HttpResponse( response, content_type="application/javascript" )
-    else:
-        c.update( {'form': form} )
-        return render_to_response( 'dev_info/base_dev_info_edit.html', c )
-
-#    c = {'form': form}
-#    c.update( csrf( request ) )
-#    return render_to_response( 'dev_info/base_dev_info_edit.html', c )
 
 def delete( request ):
     if request.method == 'POST':
@@ -162,15 +143,6 @@ def delete( request ):
 
     if request.is_ajax():
         return HttpResponse( response )
-    else:
-        return HttpResponseRedirect( '/dev_info/' )
-
-def updated( request, type, dev_id ):
-    if type == 'input':
-        dev = InputDev.objects.get( dev_id=dev_id )
-    elif type == 'output':
-        dev = OutputDev.objects.get( dev_id=dev_id )
-    return render_to_response( 'dev_info/base_dev_info_updated.html', {'type': type, 'dev': dev} )
 
 def getInputRow( dev ):
     row = '''<tr id="{0}">

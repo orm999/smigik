@@ -1,18 +1,8 @@
 from django.conf.urls.defaults import *
-from django.views.generic import list_detail
-
-from dev_info.models import InputDev, OutputDev
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
-
-devices_info = {
-    'queryset': InputDev.objects.all(),
-    'template_name': 'dev_info/base_dev_info.html',
-    'template_object_name': 'input_dev',
-    'extra_context': {'output_dev_list': OutputDev.objects.all()}
-}
 
 urlpatterns = patterns( 'dev_info.views',
     # Example:
@@ -23,10 +13,8 @@ urlpatterns = patterns( 'dev_info.views',
 
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
-    ( r'^$', 'info', {}, 'dev_info' ),
+    ( r'^$', 'index', {}, 'dev_info' ),
     ( r'^add/$', 'add', {}, 'dev_info_add' ),
     ( r'^edit/$', 'edit', {}, 'dev_info_edit' ),
     ( r'^delete/$', 'delete', {}, 'dev_info_delete' ),
-    ( r'^xhr_test/$', 'xhr_test' ),
-#    ( r'^(?P<type>(input|output))/(?P<dev_id>\d+)/updated/$', 'updated' )
  )
