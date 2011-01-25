@@ -14,5 +14,4 @@ urlpatterns = patterns( 'img_subj.views',
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
     ( r'^$', 'index', {}, 'img_subj' ),
-    ( r'^save/$', 'save', {}, 'img_subj_save' ),
  )

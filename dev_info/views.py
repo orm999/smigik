@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse, QueryDict
 from django.shortcuts import render_to_response
-from django.core.context_processors import csrf
 from django.template.loader import render_to_string
 from django.utils import simplejson
 
@@ -22,7 +21,6 @@ def index( request ):
         return render_to_response( 'dev_info/base_dev_info.html' )
 
 def add( request ):
-    c = csrf( request )
     if request.method == 'POST':
         type = request.POST.get( 'type', 'input' )
         post_form = QueryDict( request.POST.get( 'form', '' ) )
@@ -65,7 +63,6 @@ def add( request ):
         return HttpResponse( response, content_type="application/javascript" )
 
 def edit( request ):
-    c = csrf( request )
     if request.method == 'POST':
         type = request.POST.get( 'type', 'input' )
         dev_id = request.POST.get( 'dev_id' )
@@ -133,7 +130,7 @@ def delete( request ):
                 except Exception as e:
                     print( e )
                     response = 'Не удалось удалить устройство ввода №{0}'.format( dev_id )
-            else:
+            elif type == 'output':
                 try:
                     OutputDev.objects.get( dev_id=dev_id ).delete()
                     response = 'Устройство вывода №{0} удалено'.format( dev_id )
