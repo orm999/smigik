@@ -4,9 +4,9 @@
 <noscript>
 Для корректной работы необходимо включить поддержку JavaScript.<br />
 </noscript>
+
 <form id="save_subj" action="" method="post">
-	{{ form.subject.label_tag }}:
-	{{ form.subject }}
+	<strong>{{ form.subject.label_tag }}:</strong> {{ form.subject }}
 	<select id="subj_select">
 		<option id="">- Добавить тематику -</option>
 		{% for si in subj_img_list %}
