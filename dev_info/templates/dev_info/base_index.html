@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block css_tags %}
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_PREFIX }}css/dev_info.css">
+{% endblock %}
+
+{% block script_tags %}
+	<script type="text/javascript" src="{{ STATIC_PREFIX }}js/dev_info.js"></script>
+{% endblock %}
+
+{% block content %}
+<select id="dev_select">
+	<option value="input">Устройство ввода</option>
+	<option value="output">Устройство вывода</option>
+</select>
+<a id="add" href="">Добавить</a>
+|
+<a id="deleteChecked" href="">Удалить</a>
+<div id="notice"></div>
+<div id="display"></div>	
+{% endblock %}

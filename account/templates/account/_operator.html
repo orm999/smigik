@@ -1,0 +1,51 @@
+<div id="dev_list">
+{% if type == 'input' %}
+	<table id="input_dev">
+		<tr>
+			<td><input id="all" class="input" type="checkbox"></input></td>
+			<th>№</th>
+			<th>Модель</th>
+			<th>Начало эксплуатации</th>
+			<th>Режим сканирования</th>
+			<th>Действие</th>
+		</tr>
+		{% for dev in input_dev_list %}
+			<tr id="{{ dev.dev_id }}">
+				<td><input id="{{ dev.dev_id }}" class="input" type="checkbox"></input></td>
+				<td>{{ dev.dev_id }}</td>
+				<td>{{ dev.model }}</td>
+				<td>{{ dev.expl_start_date }}</td>
+				<td>{{ dev.scan_mode }}</td>
+				<td><a href="" id="{{ dev.dev_id }}" class="input edit">Редактировать</a>
+				<a href="" id="{{ dev.dev_id }}" class="input delete">Удалить</a></td>
+			</tr>
+		{% endfor %}
+	</table>
+{% else %}
+	{% if type == 'output' %}
+		<table id="output_dev">
+		<tr>
+			<td><input id="all" class="output" type="checkbox"></input></td>
+			<th>№</th>
+			<th>Модель</th>
+			<th>Начало эксплуатации</th>
+			<th>Номер картриджа</th>
+			<th>Режим печати</th>
+			<th>Действие</th>
+		</tr>
+		{% for dev in output_dev_list %}
+			<tr id="{{ dev.dev_id }}">
+				<td><input id="{{ dev.dev_id }}" class="output" type="checkbox"></input></td>
+				<td>{{ dev.dev_id }}</td>
+				<td>{{ dev.model }}</td>
+				<td>{{ dev.expl_start_date }}</td>
+				<td>{{ dev.cartridge_id }}</td>
+				<td>{{ dev.print_mode }}</td>
+				<td><a href="" id="{{ dev.dev_id }}" class="output edit">Редактировать</a>
+				<a href="" id="{{ dev.dev_id }}" class="output delete">Удалить</a></td>
+			</tr>
+		{% endfor %}
+		</table>
+	{% endif %}
+{% endif %}
+</div>

@@ -1,0 +1,9 @@
+<form id="add_dev" action="{% url dev_info_add %}" method="post">
+	<div id="add_errors"></div>
+	{% csrf_token %}
+	<table>
+		{{ form.as_table }}
+	</table>
+	<input type="submit" value="Добавить">
+	<a href="" id="cancel_add">Отмена</a>
+</form>
