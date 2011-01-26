@@ -15,7 +15,7 @@ urlpatterns = patterns( 'dev_info.views',
     # (r'^admin/', include(admin.site.urls)),
 
     ( r'^$', 'index' ),
-    ( r'^add/$', 'add', {}, 'add' ),
-    ( r'^edit/$', 'edit', {}, 'edit' ),
+    ( r'^add/$', 'add' ),
+    ( r'^edit/$', 'edit' ),
     ( r'^delete/$', 'delete' ),
  )

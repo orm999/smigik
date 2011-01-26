@@ -1,6 +1,5 @@
-<form id="add_dev" action="{% url add %}" method="post">
+<form id="add_dev" action="" method="post">
 	<div id="add_errors"></div>
-	{% csrf_token %}
 	<table>
 		{{ form.as_table }}
 	</table>

@@ -42,7 +42,7 @@ $(document).ready(function() {
 								var id = $(data.row).attr("id");
 								$("tr#" + id).fadeOut(gAnimationSpeedSlow)
 									.fadeIn(gAnimationSpeedSlow);
-								actionAddEdit();
+								actionEditDelete();
 							} else {
 								$("#add_errors").html(data.errors).hide().show(gAnimationSpeed);
 							}
@@ -65,13 +65,18 @@ $(document).ready(function() {
 	});
 	
 	$("a#deleteChecked").click(function() {
-		$("input:checkbox:checked").each(function(i) {
-			var id = $(this).attr("id");
-			if (id != "all") {
-				setTimeout(function() {$("tr#" + id + " a.delete").click();}, 500);
-			};
-		});
-		$("input#all:checkbox").removeAttr("checked");
+		var answer = confirm("Удалить выбранные устройства?");
+		if (answer) {
+			$("input:checkbox:checked").each(function(i) {
+				var id = $(this).attr("id");
+				if (id != "all") {
+					setTimeout(function() {
+						a_delete($("tr#" + id + " a.delete"), false);
+					}, i * 100);
+				};
+			});
+			$("input#all:checkbox").removeAttr("checked");
+		}
 		
 		return false;
 	});
@@ -97,12 +102,12 @@ function getDevList() {
 					});
 				};
 			});
-			actionAddEdit();
+			actionEditDelete();
 		};
 	});
 };
 
-function actionAddEdit() {
+function actionEditDelete() {
 	$("a.edit").click(function () {
 		var id = $(this).attr("id");
 		var type = $("#dev_select option:selected").val();
@@ -121,34 +126,39 @@ function actionAddEdit() {
 						$("#display").prepend(data.html);
 					};
 					
-					$("#edit_dev").submit(function(e) {
-						var form = $(e.target);
-						$.post("/dev_info/edit/", 
-							{"type": type, "dev_id": id, "form": form.serialize()},
-							function(data) {
-								if (data.success == "True") {
-									$("form#edit_dev").hide(gAnimationSpeed).queue(function() {
-										$(this).remove();
-									});
-									$.noticeAdd({text: data.notice});
-									$("tr#" + id).replaceWith(data.row);
-									$("tr#" + id).fadeOut(gAnimationSpeedSlow)
-										.fadeIn(gAnimationSpeedSlow);
-									actionAddEdit();
-								} else {
-									$("#edit_errors").html(data.errors).hide()
-										.show(gAnimationSpeed);
-								}
-						}, "json");
-						
-						return false;
-					});
-
 					$("a#cancel_edit").click(function() {
 						$("form#edit_dev").hide(gAnimationSpeed).queue(function() {
 							$(this).remove();
 						});
 						getDevList();					
+						return false;
+					});
+
+					$("#edit_dev").submit(function(e) {
+						var answer = confirm("Сохранить изменения в устройстве " + tr_type(type) + " №" + id + "?");
+						if (answer) {
+							var form = $(e.target);
+							$.post("/dev_info/edit/", 
+								{"type": type, "dev_id": id, "form": form.serialize()},
+								function(data) {
+									if (data.success == "True") {
+										$("form#edit_dev").hide(gAnimationSpeed).queue(function() {
+											$(this).remove();
+										});
+										$.noticeAdd({text: data.notice});
+										$("tr#" + id).replaceWith(data.row);
+										$("tr#" + id).fadeOut(gAnimationSpeedSlow)
+											.fadeIn(gAnimationSpeedSlow);
+									} else {
+										$("#edit_errors").html(data.errors).hide()
+											.show(gAnimationSpeed);
+									}
+							}, "json");
+						} else {
+							$("a#cancel_edit").click();
+						}
+						actionEditDelete();
+						
 						return false;
 					});
 			};
@@ -158,23 +168,48 @@ function actionAddEdit() {
 	});
 	
 	$("a.delete").click(function() {
-		var id = $(this).attr("id");
-		var type = $("#dev_select option:selected").val();
+		a_delete($(this));
+	});
+}
+
+function a_delete(obj, confm) {
+	if (confm == undefined) {
+		confm = true;
+	}
+
+	var id = obj.attr("id");
+	var type = $("#dev_select option:selected").val();
+	
+	if (confm) {
+		var answer = confirm("Удалить устройство " + tr_type(type) + " №" + id + "?");
+	} else {
+		var answer = true;
+	}
+	
+	if (answer) {
 		if ($("#display form#edit_dev").length > 0) {
 			$("form#edit_dev").hide(gAnimationSpeed).queue(function() {
-				$(this).remove();
+				obj.remove();
 			});
 		};
-		$.post("/dev_info/delete/", 
+		$.post("/dev_info/delete/",
 			{"type": type, "dev_id": id},
 			function(data) {
 				$.noticeAdd({text: data});
 				$("tr#" + id).fadeOut(gAnimationSpeed);
 			}
 		);
-		
-		return false;
-	});
+	}
+	
+	return false;
+	
+}
+
+function tr_type(type) {
+	if (type == "input")
+		return tr_type = "ввода";
+	else
+		return tr_type = "вывода";
 }
 
 function clear_form_elements(ele) {
