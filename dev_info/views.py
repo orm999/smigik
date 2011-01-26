@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse, QueryDict
+from django.http import HttpResponse, HttpResponseRedirect, QueryDict
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.utils import simplejson
@@ -66,8 +66,8 @@ def edit( request ):
     if request.method == 'POST':
         type = request.POST.get( 'type', 'input' )
         dev_id = request.POST.get( 'dev_id' )
-        post_form = QueryDict( request.POST.get( 'form', '' ) )
-        print( type, dev_id, post_form )
+        f = request.POST.get( 'form', '' )
+        post_form = QueryDict( f )
         if type == 'input':
             form = InputDevForm( post_form )
         elif type == 'output':

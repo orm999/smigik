@@ -14,8 +14,7 @@ urlpatterns = patterns( 'account.views',
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
     ( r'^$', 'index', {}, 'index' ),
-    ( r'^login/$', 'login', {}, 'login' ),
-    ( r'^user/$', 'user', {}, 'user' ),
-    ( r'^operator/$', 'operator', {}, 'operator' ),
-    ( r'^admin/$', 'admin', {}, 'admin' ),
+#    ( r'^user/$', 'user', {}, 'user' ),
+#    ( r'^operator/$', 'operator', {}, 'operator' ),
+#    ( r'^admin/$', 'admin', {}, 'admin' ),
  )

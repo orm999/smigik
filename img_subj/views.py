@@ -7,17 +7,11 @@ from django.utils import simplejson
 from img_subj.models import ImgSubj
 from img_subj.forms import ImgSubjForm
 
-JS = ''
-
 def index( request ):
-    global JS
-
     if request.is_ajax():
-        print( '1' )
         if request.method == 'POST':
             subj_id = request.POST.get( 'subj_id' )
             subject = request.POST.get( 'subject' )
-            JS = request.POST.get( 'JS', '' )
 
             if subject:
                 if subj_id:
@@ -44,11 +38,10 @@ def index( request ):
             print( msg, option )
             return HttpResponse( response )
     else:
-        print( '2' )
         form = ImgSubjForm()
         subj_img_list = ImgSubj.objects.all()
         return render_to_response( 'img_subj/base_index.html',
-            {'JS': JS, 'form': form, 'subj_img_list': subj_img_list}
+            {'form': form, 'subj_img_list': subj_img_list}
         )
 
 def genOption( id, subject ):

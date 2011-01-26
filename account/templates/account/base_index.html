@@ -1,13 +1,23 @@
 {% extends "base.html" %}
 
+{% block css_tags %}
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_PREFIX }}css/account.css">
+{% endblock %}
+
+{% block script_tags %}
+	<script type="text/javascript" src="{{ STATIC_PREFIX }}js/account.js"></script>
+{% endblock %}
+
 {% block content %}
-<select id="dev_select">
-	<option value="input">Устройство ввода</option>
-	<option value="output">Устройство вывода</option>
-</select>
-<a id="add" href="">Добавить</a>
-|
-<a id="deleteChecked" href="">Удалить</a>
-<div id="notice"></div>
-<div id="display"></div>	
+<div id="rooms">
+	<ul id="rooms">
+		<li><a id="user_room" href="">Пользователь</a></li>
+		<li><a id="operator_room" href="">Оператор</a></li>
+		<li><a id="admin_room" href="">Администратор</li>
+	</ul>
+</div>
+
+<div id="user_room"></div>
+<div id="operator_room"></div>
+<div id="admin_room"></div>
 {% endblock %}
