@@ -18,7 +18,7 @@ def index( request ):
         response = simplejson.dumps( {'success': 'True', 'html': html} )
         return HttpResponse( response, content_type="application/javascript" )
     else:
-        return render_to_response( 'dev_info/base_dev_info.html' )
+        return render_to_response( 'dev_info/base_index.html' )
 
 def add( request ):
     if request.method == 'POST':

@@ -13,8 +13,9 @@ urlpatterns = patterns( 'dev_info.views',
 
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
-    ( r'^$', 'index', {}, 'dev_info' ),
-    ( r'^add/$', 'add', {}, 'dev_info_add' ),
-    ( r'^edit/$', 'edit', {}, 'dev_info_edit' ),
-    ( r'^delete/$', 'delete', {}, 'dev_info_delete' ),
+
+    ( r'^$', 'index' ),
+    ( r'^add/$', 'add', {}, 'add' ),
+    ( r'^edit/$', 'edit', {}, 'edit' ),
+    ( r'^delete/$', 'delete' ),
  )
