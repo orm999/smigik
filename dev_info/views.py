@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse, HttpResponseRedirect, QueryDict
 from django.shortcuts import render_to_response
+from django.core.context_processors import csrf
 from django.template.loader import render_to_string
 from django.utils import simplejson
 
@@ -18,7 +19,8 @@ def index( request ):
         response = simplejson.dumps( {'success': 'True', 'html': html} )
         return HttpResponse( response, content_type="application/javascript" )
     else:
-        return render_to_response( 'dev_info/base_index.html' )
+        c = csrf( request )
+        return render_to_response( 'dev_info/base_index.html', c )
 
 def add( request ):
     if request.method == 'POST':

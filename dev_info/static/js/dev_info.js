@@ -135,8 +135,8 @@ function actionEditDelete() {
 					});
 
 					$("#edit_dev").submit(function(e) {
-						var answer = confirm("Сохранить изменения в устройстве " + tr_type(type) + " №" + id + "?");
-						if (answer) {
+//						var answer = confirm("Сохранить изменения в устройстве " + tr_type(type) + " №" + id + "?");
+						if (true) {
 							var form = $(e.target);
 							$.post("/dev_info/edit/", 
 								{"type": type, "dev_id": id, "form": form.serialize()},
