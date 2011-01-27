@@ -1,6 +1,7 @@
 var gAnimationSpeed = "fast";
 var gAnimationSpeedSlow = "slow";
 var gShowNoticeTime = 2000;
+var gRequestDelay = 500;
 
 $(document).ready(function() {
 	$("#dev_select").change(function() {
@@ -17,65 +18,81 @@ $(document).ready(function() {
 
 	$("a#add").click(function() {
 		var type = $("#dev_select option:selected").val();
-		$.getJSON("/dev_info/add/", {"type": type}, function(data) {
-			if (data.success == "True") {
-				if ($("#display form#add_dev").length == 0) {
-					$("#display").prepend(data.html);
-					$("form#add_dev").hide().show(gAnimationSpeed);
-				} else {
-					clear_form_elements($("form#add_dev"));
-				};
-				if ($("#display form#edit_dev").length > 0) {
-					$("form#edit_dev").remove();
-				}
-
-				$("#add_dev").submit(function(e) {
-					var form = $(e.target);
-					$.post("/dev_info/add/", {"type": type, "form": form.serialize()},
-						function(data) {
-							if (data.success == "True") {
-								$("form#add_dev").hide(gAnimationSpeed).queue(function() {
-									$(this).remove();
-								});
-								$.noticeAdd({text: data.notice});
-								$("table#" + type + "_dev tbody tr:first").after(data.row);
-								var id = $(data.row).attr("id");
-								$("tr#" + id).fadeOut(gAnimationSpeedSlow)
-									.fadeIn(gAnimationSpeedSlow);
-								actionEditDelete();
-							} else {
-								$("#add_errors").html(data.errors).hide().show(gAnimationSpeed);
-							}
-					}, "json");
-					
-					return false;
-				});
-
-				$("a#cancel_add").click(function() {
-					$("form#add_dev").hide(gAnimationSpeed).queue(function() {
-						$(this).remove();
+		$.ajax({url: "/dev_info/add/", 
+			data: {"type": type}, 
+			success: function(data) {
+				if (data.success == "True") {
+					if ($("#display form#add_dev").length == 0) {
+						$("#display").prepend(data.html);
+						$("form#add_dev").hide().show(gAnimationSpeed);
+					} else {
+						clear_form_elements($("form#add_dev"));
+					};
+					if ($("#display form#edit_dev").length > 0) {
+						$("form#edit_dev").remove();
+					}
+	
+					$("#add_dev").submit(function(e) {
+						var form = $(e.target);
+						$.post("/dev_info/add/", {"type": type, "form": form.serialize()},
+							function(data) {
+								if (data.success == "True") {
+									$("form#add_dev").hide(gAnimationSpeed).queue(function() {
+										$(this).remove();
+									});
+									$.noticeAdd({text: data.notice});
+									$("table#" + type + "_dev tbody tr:first").after(data.row);
+									var id = $(data.row).attr("id");
+									$("tr#" + id).fadeOut(gAnimationSpeedSlow)
+										.fadeIn(gAnimationSpeedSlow);
+									actionEditDelete();
+								} else {
+									$("#add_errors").html(data.errors).hide().show(gAnimationSpeed);
+								}
+						}, "json");
+						
+						return false;
 					});
-					getDevList();					
-					return false;
-				});
-			};
+	
+					$("a#cancel_add").click(function() {
+						$("form#add_dev").hide(gAnimationSpeed).queue(function() {
+							$(this).remove();
+						});
+	//					getDevList();				
+						return false;
+					})
+				}
+			},
+			
+			type: "GET",
+			dataType: "json",
+			
+			singleton: true,
+			delay: gRequestDelay,
+			
+			blocking: false
 		});
 		
 		return false;
 	});
 	
 	$("a#deleteChecked").click(function() {
-		var answer = confirm("Удалить выбранные устройства?");
-		if (answer) {
-			$("input:checkbox:checked").each(function(i) {
-				var id = $(this).attr("id");
-				if (id != "all") {
-					setTimeout(function() {
-						a_delete($("tr#" + id + " a.delete"), false);
-					}, i * 100);
-				};
-			});
-			$("input#all:checkbox").removeAttr("checked");
+		var checkboxes = $("input:checkbox:checked");
+		if (checkboxes.size() > 0) {
+			var answer = confirm("Удалить выбранные устройства?");
+			if (answer) {
+				checkboxes.each(function(i) {
+					var id = $(this).attr("id");
+					if (id != "all") {
+						setTimeout(function() {
+							a_delete($("tr#" + id + " a.delete"), false);
+						}, i * 100);
+					};
+				});
+				$("input#all:checkbox").removeAttr("checked");
+			}
+		} else {
+			alert("Не выбрано ни одного устройства.")
 		}
 		
 		return false;
@@ -111,9 +128,9 @@ function actionEditDelete() {
 	$("a.edit").click(function () {
 		var id = $(this).attr("id");
 		var type = $("#dev_select option:selected").val();
-		$.getJSON("/dev_info/edit/", 
-			{"type": type, "dev_id": id}, 
-			function(data) {
+		$.ajax({url: "/dev_info/edit/", 
+			data: {"type": type, "dev_id": id}, 
+			success: function(data) {
 				if (data.success == "True") {
 					if ($("#display form#add_dev").length > 0) {
 						$("form#add_dev").remove();
@@ -130,38 +147,46 @@ function actionEditDelete() {
 						$("form#edit_dev").hide(gAnimationSpeed).queue(function() {
 							$(this).remove();
 						});
-						getDevList();					
+//						getDevList();			
 						return false;
 					});
 
 					$("#edit_dev").submit(function(e) {
-//						var answer = confirm("Сохранить изменения в устройстве " + tr_type(type) + " №" + id + "?");
-						if (true) {
-							var form = $(e.target);
-							$.post("/dev_info/edit/", 
-								{"type": type, "dev_id": id, "form": form.serialize()},
-								function(data) {
-									if (data.success == "True") {
-										$("form#edit_dev").hide(gAnimationSpeed).queue(function() {
-											$(this).remove();
-										});
-										$.noticeAdd({text: data.notice});
-										$("tr#" + id).replaceWith(data.row);
-										$("tr#" + id).fadeOut(gAnimationSpeedSlow)
-											.fadeIn(gAnimationSpeedSlow);
-									} else {
-										$("#edit_errors").html(data.errors).hide()
-											.show(gAnimationSpeed);
-									}
-							}, "json");
+						var answer = confirm("Сохранить изменения в устройстве " + tr_type(type) + " №" + id + "?");
+						if (answer) {
+//							var form = $(e.target);
+//							$.post("/dev_info/edit/", 
+//								{"type": type, "dev_id": id, "form": form.serialize()},
+//								function(data) {
+//									if (data.success == "True") {
+//										$("form#edit_dev").hide(gAnimationSpeed).queue(function() {
+//											$(this).remove();
+//										});
+//										$.noticeAdd({text: data.notice});
+//										$("tr#" + id).replaceWith(data.row);
+//										$("tr#" + id).fadeOut(gAnimationSpeedSlow)
+//											.fadeIn(gAnimationSpeedSlow);
+//									} else {
+//										$("#edit_errors").html(data.errors).hide()
+//											.show(gAnimationSpeed);
+//									}
+//									actionEditDelete();
+//									
+//									return false;
+//							}, "json");
 						} else {
 							$("a#cancel_edit").click();
 						}
-						actionEditDelete();
 						
 						return false;
 					});
-			};
+				}
+			},
+			type: "GET",
+			dataType: "json",
+			
+			singleton: true,
+			delay: gRequestDelay
 		});
 		
 		return false;
@@ -169,6 +194,8 @@ function actionEditDelete() {
 	
 	$("a.delete").click(function() {
 		a_delete($(this));
+		
+		return false;
 	});
 }
 
@@ -197,12 +224,12 @@ function a_delete(obj, confm) {
 			function(data) {
 				$.noticeAdd({text: data});
 				$("tr#" + id).fadeOut(gAnimationSpeed);
+				actionEditDelete();
 			}
 		);
 	}
-	
-	return false;
-	
+	alert('hi');
+	actionEditDelete();
 }
 
 function tr_type(type) {
