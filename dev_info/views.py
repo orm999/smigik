@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import urllib
+
 from django.http import HttpResponse, HttpResponseRedirect, QueryDict
 from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
@@ -14,7 +16,8 @@ def index( request ):
         output_dev_list = OutputDev.objects.all()
         type = request.GET.get( 'type', 'input' )
         html = render_to_string( 'dev_info/_list.html',
-            {'type': type, 'input_dev_list': input_dev_list, 'output_dev_list': output_dev_list}
+            {'type': type, 'input_dev_list': input_dev_list,
+             'output_dev_list': output_dev_list}
         )
         response = simplejson.dumps( {'success': 'True', 'html': html} )
         return HttpResponse( response, content_type="application/javascript" )
@@ -25,11 +28,13 @@ def index( request ):
 def add( request ):
     if request.method == 'POST':
         type = request.POST.get( 'type', 'input' )
-        post_form = QueryDict( request.POST.get( 'form', '' ) )
+        url = request.POST.get( 'form', '' )
+        unq_url = urllib.unquote( str( url ) )
+        query = QueryDict( unq_url )
         if type == 'input':
-            form = InputDevForm( post_form )
+            form = InputDevForm( query )
         elif type == 'output':
-            form = OutputDevForm( post_form )
+            form = OutputDevForm( query )
 
         if form.is_valid():
             cd = form.cleaned_data
@@ -68,12 +73,13 @@ def edit( request ):
     if request.method == 'POST':
         type = request.POST.get( 'type', 'input' )
         dev_id = request.POST.get( 'dev_id' )
-        f = request.POST.get( 'form', '' )
-        post_form = QueryDict( f )
+        url = request.POST.get( 'form', '' )
+        unq_url = urllib.unquote( str( url ) )
+        query = QueryDict( unq_url )
         if type == 'input':
-            form = InputDevForm( post_form )
+            form = InputDevForm( query )
         elif type == 'output':
-            form = OutputDevForm( post_form )
+            form = OutputDevForm( query )
 
         if form.is_valid():
             cd = form.cleaned_data
@@ -105,12 +111,14 @@ def edit( request ):
             if type == 'input':
                 dev = InputDev.objects.get( dev_id=dev_id )
                 form = InputDevForm( 
-                    initial={'model': dev.model, 'expl_start_date': dev.expl_start_date, 'scan_mode': dev.scan_mode}
+                    initial={'model': dev.model, 'expl_start_date': dev.expl_start_date,
+                             'scan_mode': dev.scan_mode}
                 )
             elif type == 'output':
                 dev = OutputDev.objects.get( dev_id=dev_id )
                 form = OutputDevForm( 
-                    initial={'model': dev.model, 'expl_start_date': dev.expl_start_date, 'cartridge_id': dev.cartridge_id, 'print_mode': dev.print_mode}
+                    initial={'model': dev.model, 'expl_start_date': dev.expl_start_date,
+                             'cartridge_id': dev.cartridge_id, 'print_mode': dev.print_mode}
                 )
         else:
             return HttpResponseRedirect( '/dev_info/' )
@@ -144,7 +152,7 @@ def delete( request ):
         return HttpResponse( response )
 
 def getInputRow( dev ):
-    row = '''<tr id="{0}">
+    row = u'''<tr id="{0}">
                  <td><input id="{0}" class="input" type="checkbox"></input></td>
                  <td>{0}</td>
                  <td>{1}</td>
@@ -156,7 +164,7 @@ def getInputRow( dev ):
     return row
 
 def getOutputRow( dev ):
-    row = '''<tr id="{0}">
+    row = u'''<tr id="{0}">
                  <td><input id="{0}" class="output" type="checkbox"></input></td>
                  <td>{0}</td>
                  <td>{1}</td>
@@ -165,5 +173,6 @@ def getOutputRow( dev ):
                  <td>{4}</td>
                  <td><a href="" id="{0}" class="output edit">Редактировать</a>
                  <a href="" id="{0}" class="output delete">Удалить</a></td>
-             </tr>'''.format( dev.dev_id, dev.model, dev.expl_start_date, dev.cartridge_id, dev.print_mode )
+             </tr>'''.format( dev.dev_id, dev.model, dev.expl_start_date,
+                              dev.cartridge_id, dev.print_mode )
     return row

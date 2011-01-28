@@ -154,26 +154,26 @@ function actionEditDelete() {
 					$("#edit_dev").submit(function(e) {
 						var answer = confirm("Сохранить изменения в устройстве " + tr_type(type) + " №" + id + "?");
 						if (answer) {
-//							var form = $(e.target);
-//							$.post("/dev_info/edit/", 
-//								{"type": type, "dev_id": id, "form": form.serialize()},
-//								function(data) {
-//									if (data.success == "True") {
-//										$("form#edit_dev").hide(gAnimationSpeed).queue(function() {
-//											$(this).remove();
-//										});
-//										$.noticeAdd({text: data.notice});
-//										$("tr#" + id).replaceWith(data.row);
-//										$("tr#" + id).fadeOut(gAnimationSpeedSlow)
-//											.fadeIn(gAnimationSpeedSlow);
-//									} else {
-//										$("#edit_errors").html(data.errors).hide()
-//											.show(gAnimationSpeed);
-//									}
-//									actionEditDelete();
-//									
-//									return false;
-//							}, "json");
+							var form = $(e.target);
+							$.post("/dev_info/edit/", 
+								{"type": type, "dev_id": id, "form": form.serialize()},
+								function(data) {
+									if (data.success == "True") {
+										$("form#edit_dev").hide(gAnimationSpeed).queue(function() {
+											$(this).remove();
+										});
+										$.noticeAdd({text: data.notice});
+										$("tr#" + id).replaceWith(data.row);
+										$("tr#" + id).fadeOut(gAnimationSpeedSlow)
+											.fadeIn(gAnimationSpeedSlow);
+									} else {
+										$("#edit_errors").html(data.errors).hide()
+											.show(gAnimationSpeed);
+									}
+									actionEditDelete();
+									
+									return false;
+							}, "json");
 						} else {
 							$("a#cancel_edit").click();
 						}

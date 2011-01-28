@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
+#import urllib
 
 from django.http import HttpResponse
+from django.db import IntegrityError
 from django.shortcuts import render_to_response
 from django.utils import simplejson
 
 from img_subj.models import ImgSubj
 from img_subj.forms import ImgSubjForm
+from pickletools import optimize
 
 def index( request ):
     if request.is_ajax():
@@ -14,27 +17,42 @@ def index( request ):
             subject = request.POST.get( 'subject' )
 
             if subject:
-                if subj_id:
-                    subj = ImgSubj.objects.get( subj_id=subj_id )
-                    old_subject = subj.subject
-                    subj.subject = subject
-                    msg = 'Тематика "{0}" изменена на "{1}"'.format( old_subject, subject )
+                if subj_id != '0':
+                    try:
+                        subj = ImgSubj.objects.get( subj_id=subj_id )
+                        old_subject = subj.subject
+                        subj.subject = subject
+                        subj.save()
+                        msg = u'Тематика "{0}" изменена на "{1}"'.format( old_subject, subject )
+                        option = genOption( subj )
+                        action = 'updated'
+                    except IndentationError:
+                        msg = u'Тематика "{0}" уже добавлена'.format( subject )
+                        option = ''
+                        action = 'exists'
                 else:
-                    subj = ImgSubj( subject=subject )
-                    subj.save()
-                    msg = 'Тематика "{0}" добавлена'.format( subject )
-                subj.save()
-                option = genOption( subj.subj_id, subj.subject )
+                    try:
+                        subj = ImgSubj( subject=subject )
+                        subj.save()
+                        msg = u'Тематика "{0}" добавлена'.format( subject )
+                        option = genOption( subj )
+                        action = 'added'
+                    except IntegrityError:
+                        msg = u'Тематика "{0}" уже добавлена'.format( subject )
+                        option = ''
+                        action = 'exists'
             else:
                 try:
                     subj = ImgSubj.objects.get( subj_id=subj_id )
-                    msg = 'Тематика "{0}" удалена'.format( subj.subject )
+                    msg = u'Тематика "{0}" удалена'.format( subj.subject )
                     subj.delete()
+                    action = 'deleted'
                 except ImgSubj.DoesNotExist as e:
-                    msg = 'Такой тематики нет!'
+                    msg = u'Такой тематики нет!'
+                    action = 'doesnotexist'
                 option = ''
 
-            response = simplejson.dumps( {'msg': msg, 'option': option} )
+            response = simplejson.dumps( {'action': action, 'msg': msg, 'option': option} )
             print( msg, option )
             return HttpResponse( response )
     else:
@@ -44,5 +62,5 @@ def index( request ):
             {'form': form, 'subj_img_list': subj_img_list}
         )
 
-def genOption( id, subject ):
-    return '<option id="{0}">{1}</option>'.format( id, subject )
+def genOption( subj ):
+    return u'<option id="{0}">{1}</option>'.format( subj.subj_id, subj.subject )
