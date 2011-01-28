@@ -69,10 +69,8 @@ $(document).ready(function() {
 			
 			singleton: true,
 			delay: gRequestDelay,
-			
-			blocking: false
 		});
-		
+
 		return false;
 	});
 	
@@ -212,7 +210,7 @@ function a_delete(obj, confm) {
 	} else {
 		var answer = true;
 	}
-	
+
 	if (answer) {
 		if ($("#display form#edit_dev").length > 0) {
 			$("form#edit_dev").hide(gAnimationSpeed).queue(function() {
@@ -228,8 +226,7 @@ function a_delete(obj, confm) {
 			}
 		);
 	}
-	alert('hi');
-	actionEditDelete();
+//	actionEditDelete();
 }
 
 function tr_type(type) {
