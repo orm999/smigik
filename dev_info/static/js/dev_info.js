@@ -1,7 +1,32 @@
 var gAnimationSpeed = "fast";
 var gAnimationSpeedSlow = "slow";
 var gShowNoticeTime = 2000;
-var gRequestDelay = 500;
+var gRequestDelay = 1000;
+
+
+$.tr_type = function tr_type(type) {
+	if (type == "input")
+		return "ввода";
+	else
+		return  "вывода";
+}
+
+$.clear_form_elements = function clear_form_elements(ele) {
+    $(ele).find(':input').each(function() {
+        switch(this.type) {
+            case 'password':
+            case 'select-multiple':
+            case 'select-one':
+            case 'text':
+            case 'textarea':
+                $(this).val('');
+                break;
+            case 'checkbox':
+            case 'radio':
+                this.checked = false;
+        }
+    });
+}
 
 $(document).ready(function() {
 	$("#dev_select").change(function() {
@@ -26,7 +51,7 @@ $(document).ready(function() {
 						$("#display").prepend(data.html);
 						$("form#add_dev").hide().show(gAnimationSpeed);
 					} else {
-						clear_form_elements($("form#add_dev"));
+						$.clear_form_elements($("form#add_dev"));
 					};
 					if ($("#display form#edit_dev").length > 0) {
 						$("form#edit_dev").remove();
@@ -150,7 +175,7 @@ function actionEditDelete() {
 					});
 
 					$("#edit_dev").submit(function(e) {
-						var answer = confirm("Сохранить изменения в устройстве " + tr_type(type) + " №" + id + "?");
+						var answer = confirm("Сохранить изменения в устройстве " + $.tr_type(type) + " №" + id + "?");
 						if (answer) {
 							var form = $(e.target);
 							$.post("/dev_info/edit/", 
@@ -192,6 +217,7 @@ function actionEditDelete() {
 	
 	$("a.delete").click(function() {
 		a_delete($(this));
+//		getDevList();
 		
 		return false;
 	});
@@ -206,7 +232,7 @@ function a_delete(obj, confm) {
 	var type = $("#dev_select option:selected").val();
 	
 	if (confm) {
-		var answer = confirm("Удалить устройство " + tr_type(type) + " №" + id + "?");
+		var answer = confirm("Удалить устройство " + $.tr_type(type) + " №" + id + "?");
 	} else {
 		var answer = true;
 	}
@@ -226,29 +252,4 @@ function a_delete(obj, confm) {
 			}
 		);
 	}
-//	actionEditDelete();
-}
-
-function tr_type(type) {
-	if (type == "input")
-		return tr_type = "ввода";
-	else
-		return tr_type = "вывода";
-}
-
-function clear_form_elements(ele) {
-    $(ele).find(':input').each(function() {
-        switch(this.type) {
-            case 'password':
-            case 'select-multiple':
-            case 'select-one':
-            case 'text':
-            case 'textarea':
-                $(this).val('');
-                break;
-            case 'checkbox':
-            case 'radio':
-                this.checked = false;
-        }
-    });
 }

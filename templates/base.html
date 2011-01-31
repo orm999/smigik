@@ -9,6 +9,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
     <link type="text/css" rel="stylesheet" href="{{ STATIC_PREFIX }}css/jquery.notice.css">
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_PREFIX }}css/base.css">
     {% block css_tags %}{% endblock %}
     
     <script type="text/javascript" src="{{ STATIC_PREFIX }}js/jquery-1.4.4.min.js"></script>
@@ -20,6 +21,7 @@
 <body>
 	{% include "script/_noscript.html" %}
 	{% include "script/_script_start.html" %}
+		{% include "menu/_menu.html" %}
 		{% block content %}{% endblock %}
 		{% block footer %}{% endblock %}
 	{% include "script/_script_end.html" %}	
