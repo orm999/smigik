@@ -18,9 +18,11 @@ urlpatterns += patterns( '',
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
 #    ( r'^user_info/', include( 'user_info.urls' ) ),
-    ( r'^$', include( 'main.urls' ) ),
+    ( r'^$', include( 'root.urls' ) ),
     ( r'^dev_info/', include( 'dev_info.urls' ) ),
     ( r'^img_subj/', include( 'img_subj.urls' ) ),
+    ( r'^help_info/', include( 'help_info.urls' ) ),
+    ( r'^req_proc/', include( 'req_proc.urls' ) ),
  )
 
 #if settings.DEBUG:

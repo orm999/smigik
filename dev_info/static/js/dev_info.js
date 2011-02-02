@@ -83,7 +83,6 @@ $(document).ready(function() {
 						$("form#add_dev").hide(gAnimationSpeed).queue(function() {
 							$(this).remove();
 						});
-	//					getDevList();				
 						return false;
 					})
 				}
@@ -170,7 +169,6 @@ function actionEditDelete() {
 						$("form#edit_dev").hide(gAnimationSpeed).queue(function() {
 							$(this).remove();
 						});
-//						getDevList();			
 						return false;
 					});
 
@@ -217,8 +215,6 @@ function actionEditDelete() {
 	
 	$("a.delete").click(function() {
 		a_delete($(this));
-//		getDevList();
-		
 		return false;
 	});
 }

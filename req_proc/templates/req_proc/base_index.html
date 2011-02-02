@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block css_tags %}
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_PREFIX }}css/req_proc.css">
+{% endblock %}
+
+{% block script_tags %}
+	<script type="text/javascript" src="{{ STATIC_PREFIX }}js/req_proc.js"></script>
+{% endblock %}
+
+{% block content %}
+{% for req in req_list %}
+	<a href="">{{ req }}</a>
+{% endfor %}
+{% endblock %}

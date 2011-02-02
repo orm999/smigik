@@ -1,0 +1,8 @@
+ul#rooms {
+}
+
+ul#rooms li {
+	display: inline;
+	list-style-type: none;
+	padding-right: 2px;
+}
