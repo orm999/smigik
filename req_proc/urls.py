@@ -15,4 +15,6 @@ urlpatterns = patterns( 'req_proc.views',
     # (r'^admin/', include(admin.site.urls)),
 
     ( r'^$', 'index' ),
+    ( r'^upload_img/$', 'upload_img' ),
+    ( r'^upload_cert/$', 'upload_cert' ),
  )

@@ -1,9 +1,3 @@
-var gAnimationSpeed = "fast";
-var gAnimationSpeedSlow = "slow";
-var gShowNoticeTime = 2000;
-var gRequestDelay = 1000;
-
-
 $.tr_type = function tr_type(type) {
 	if (type == "input")
 		return "ввода";

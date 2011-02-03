@@ -9,7 +9,26 @@
 {% endblock %}
 
 {% block content %}
+<ul id="req_list">
 {% for req in req_list %}
-	<a href="">{{ req }}</a>
+	<li>
+		<a id="request_{{ req }}" class="request" href="">Заявка на регистрацию изображения №{{ req }}.</a>
+		<select id="status_{{ req }}" class="status">
+			<option id="accepted">Заявка принята</option>
+			<option id="img_marked">Изображение промаркировано</option>
+			<option id="cert_created">Сертификат сформирован</option>
+			<option id="cert_sent">Сертификат отправлен</option>
+		</select>
+		<div id="req_proc_{{ req }}" class="req_proc">
+			<a id="download_img_{{ req }}" class="download_img" href="">Скачать изображение</a>
+			->
+			<a id="download_md_{{ req }}" class="download_md" href="">Скачать метаданные</a>
+			->
+			<a id="upload_img_{{ req }}" class="upload_img" href="">Загрузить промаркированное изображение</a>
+			->
+			<a id="upload_cert_{{ req }}" class="upload_cert" href="">Загрузить сертификат</a>
+		</div>
+	</li>
 {% endfor %}
+</ul>
 {% endblock %}

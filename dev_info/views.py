@@ -20,7 +20,7 @@ def index( request ):
              'output_dev_list': output_dev_list}
         )
         response = simplejson.dumps( {'success': 'True', 'html': html} )
-        return HttpResponse( response, content_type="application/javascript" )
+        return HttpResponse( response, content_type='application/javascript' )
     else:
         c = csrf( request )
         return render_to_response( 'dev_info/base_index.html', c )
@@ -67,7 +67,7 @@ def add( request ):
         response = simplejson.dumps( {'success': 'True', 'html': html} )
 
     if request.is_ajax():
-        return HttpResponse( response, content_type="application/javascript" )
+        return HttpResponse( response, content_type='application/javascript' )
 
 def edit( request ):
     if request.method == 'POST':
@@ -126,7 +126,7 @@ def edit( request ):
         response = simplejson.dumps( {'success': 'True', 'html': html} )
 
     if request.is_ajax():
-        return HttpResponse( response, content_type="application/javascript" )
+        return HttpResponse( response, content_type='application/javascript' )
 
 def delete( request ):
     if request.method == 'POST':

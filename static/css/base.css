@@ -7,3 +7,11 @@ ul#menu li {
 	list-style-type: none;
 	padding-right: 2px;
 }
+
+table.form tbody tr th {
+	text-align: right;
+}
+
+th {
+	text-align: left;
+}
