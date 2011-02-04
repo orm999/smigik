@@ -63,7 +63,8 @@ def add( request ):
             form = InputDevForm()
         elif type == 'output':
             form = OutputDevForm()
-        html = render_to_string( 'dev_info/_add.html', {'form': form} )
+        html = render_to_string( '_form.html', {'id': 'add_dev', 'form': form,
+            'submit_val': 'Добавить'} )
         response = simplejson.dumps( {'success': 'True', 'html': html} )
 
     if request.is_ajax():
@@ -122,7 +123,8 @@ def edit( request ):
                 )
         else:
             return HttpResponseRedirect( '/dev_info/' )
-        html = render_to_string( 'dev_info/_edit.html', {'form': form} )
+        html = render_to_string( '_form.html', {'id': 'edit_dev', 'form': form,
+            'submit_val': 'Обновить'} )
         response = simplejson.dumps( {'success': 'True', 'html': html} )
 
     if request.is_ajax():

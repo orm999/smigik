@@ -1,12 +1,16 @@
+# -*- coding: utf-8 -*-
+
 import os
+import urllib
 
 from settings import MEDIA_ROOT
 
-from django.http import HttpResponse
+from django.http import HttpResponse, QueryDict
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.utils import simplejson
 
+from req_proc.models import ImgMarked, CertCreated
 from req_proc.forms import ImgMarkedForm, CertCreatedForm
 
 def index( request ):
@@ -28,10 +32,25 @@ def index( request ):
 
 def upload_img( request ):
     if request.method == 'POST':
-        response = simplejson.dumps( {'success': 'True', 'html': 'hi'} )
+        url = request.POST.get( 'form', '' )
+        unq_url = urllib.unquote( str( url ) )
+        query = QueryDict( unq_url )
+        print( query )
+        form = ImgMarkedForm( query )
+
+        if form.is_valid():
+            cd = form.cleaned_data
+            print( cd )
+
+            img = ImgMarked()
+            img.save()
+
+        notice = 'Изображение {0} загружено'.format( img )
+        response = simplejson.dumps( {'success': 'True', 'notice': notice, 'html': 'hi'} )
     else:
         form = ImgMarkedForm()
-        html = render_to_string( 'req_proc/_upload_img.html', {'form': form} )
+        html = render_to_string( '_form.html', {'id': 'upload_img', 'form': form,
+            'submit_val': 'Изображение промаркировано'} )
         response = simplejson.dumps( {'success': 'True', 'html': html} )
 
     if request.is_ajax():
@@ -42,7 +61,8 @@ def upload_cert( request ):
         response = simplejson.dumps( {'success': 'True', 'html': 'hi'} )
     else:
         form = CertCreatedForm()
-        html = render_to_string( 'req_proc/_upload_cert.html', {'form': form} )
+        html = render_to_string( '_form.html', {'id': 'upload_cert', 'form': form,
+            'submit_val': 'Сертификат сформирован'} )
         response = simplejson.dumps( {'success': 'True', 'html': html} )
 
     if request.is_ajax():

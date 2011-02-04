@@ -11,45 +11,43 @@ $(document).ready(function() {
 	
 	$("a.upload_img").click(function() {
 		var div_id = $(this).attr("id").split("_")[2];
-		$.ajax({url: "/req_proc/upload_img/", 
+		$.ajax({url: "/req_proc/upload_img/",
 			success: function(data) {
 				if (data.success == "True") {
-					$("div#req_proc_" + div_id).append(data.html);
-					
-					if ($("#display form#add_dev").length == 0) {
-						$("#display").prepend(data.html);
-						$("form#add_dev").hide().show(gAnimationSpeed);
-					} else {
-						$.clear_form_elements($("form#add_dev"));
-					};
-					if ($("#display form#edit_dev").length > 0) {
-						$("form#edit_dev").remove();
+					var form_upload_cert = $("div#req_proc_" + div_id + " form#upload_cert");
+					if (form_upload_cert.length > 0) {
+						form_upload_cert.remove();
 					}
 	
-					$("#add_dev").submit(function(e) {
+					var form_upload_img = $("div#req_proc_" + div_id + " form#upload_img");
+					if (form_upload_img.length == 0) {
+						$("div#req_proc_" + div_id).append(data.html);
+						$("form#upload_img").hide().show(gAnimationSpeed);
+					} else {
+						$.clear_form_elements(form_upload_img);
+					}
+
+					$("#upload_img").submit(function(e) {
 						var form = $(e.target);
-						$.post("/dev_info/add/", {"type": type, "form": form.serialize()},
+						alert($("#upload_img input").attr("value"));
+//						alert(form.serialize());
+						$.post("/req_proc/upload_img/", {"form": form.serialize()},
 							function(data) {
 								if (data.success == "True") {
-									$("form#add_dev").hide(gAnimationSpeed).queue(function() {
+									$("form#upload_img").hide(gAnimationSpeed).queue(function() {
 										$(this).remove();
 									});
 									$.noticeAdd({text: data.notice});
-									$("table#" + type + "_dev tbody tr:first").after(data.row);
-									var id = $(data.row).attr("id");
-									$("tr#" + id).fadeOut(gAnimationSpeedSlow)
-										.fadeIn(gAnimationSpeedSlow);
-									actionEditDelete();
 								} else {
-									$("#add_errors").html(data.errors).hide().show(gAnimationSpeed);
+									$("#errors").html(data.errors).hide().show(gAnimationSpeed);
 								}
 						}, "json");
 						
 						return false;
 					});
 	
-					$("a#cancel_add").click(function() {
-						$("form#add_dev").hide(gAnimationSpeed).queue(function() {
+					$("a#cancel").click(function() {
+						$("form#upload_img").hide(gAnimationSpeed).queue(function() {
 							$(this).remove();
 						});
 						return false;
@@ -68,6 +66,56 @@ $(document).ready(function() {
 	})
 	
 	$("a.upload_cert").click(function() {
+		var div_id = $(this).attr("id").split("_")[2];
+		$.ajax({url: "/req_proc/upload_cert/",
+			success: function(data) {
+				if (data.success == "True") {
+					var form_upload_cert = $("div#req_proc_" + div_id + " form#upload_img");
+					if (form_upload_cert.length > 0) {
+						form_upload_cert.remove();
+					}
+	
+					var form_upload_img = $("div#req_proc_" + div_id + " form#upload_cert");
+					if (form_upload_img.length == 0) {
+						$("div#req_proc_" + div_id).append(data.html);
+						$("form#upload_cert").hide().show(gAnimationSpeed);
+					} else {
+						$.clear_form_elements(form_upload_img);
+					}
+					
+					$("#upload_cert").submit(function(e) {
+						var form = $(e.target);
+						$.post("/req_proc/upload_cert/", {"form": form.serialize()},
+							function(data) {
+								if (data.success == "True") {
+									$("form#upload_cert").hide(gAnimationSpeed).queue(function() {
+										$(this).remove();
+									});
+									$.noticeAdd({text: data.notice});
+								} else {
+									$("#errors").html(data.errors).hide().show(gAnimationSpeed);
+								}
+						}, "json");
+						
+						return false;
+					});
+	
+					$("a#cancel").click(function() {
+						$("form#upload_cert").hide(gAnimationSpeed).queue(function() {
+							$(this).remove();
+						});
+						return false;
+					})
+				}
+			},
+			
+			type: "GET",
+			dataType: "json",
+			
+			singleton: true,
+			delay: gRequestDelay,
+		});
+
 		return false;
 	})
 });
