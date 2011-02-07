@@ -64,7 +64,7 @@ def add( request ):
         elif type == 'output':
             form = OutputDevForm()
         html = render_to_string( '_form.html', {'id': 'add_dev', 'form': form,
-            'submit_val': 'Добавить'} )
+            'submit_val': 'Добавить', 'legend': 'Добавить устройство ' + dev_type( type )} )
         response = simplejson.dumps( {'success': 'True', 'html': html} )
 
     if request.is_ajax():
@@ -124,7 +124,7 @@ def edit( request ):
         else:
             return HttpResponseRedirect( '/dev_info/' )
         html = render_to_string( '_form.html', {'id': 'edit_dev', 'form': form,
-            'submit_val': 'Обновить'} )
+            'submit_val': 'Обновить', 'legend': 'Редактировать устройство ' + dev_type( type )} )
         response = simplejson.dumps( {'success': 'True', 'html': html} )
 
     if request.is_ajax():
@@ -178,3 +178,9 @@ def getOutputRow( dev ):
              </tr>'''.format( dev.dev_id, dev.model, dev.expl_start_date,
                               dev.cartridge_id, dev.print_mode )
     return row
+
+def dev_type( type ):
+    if type == 'input':
+        return 'ввода'
+    elif type == 'output':
+        return 'вывода'

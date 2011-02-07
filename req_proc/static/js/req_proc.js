@@ -27,22 +27,52 @@ $(document).ready(function() {
 						$.clear_form_elements(form_upload_img);
 					}
 
+//					$("#upload_img").ajaxForm({
+//						url: "/req_proc/upload_img/",
+//						type: "POST",
+////						dataType: "json",
+//						beforeSubmit: function(formData, jqForm, options) {
+//							var qString = $.param(formData);
+//							alert('About to submit: \n\n' + qString);
+//							return true;
+//						},
+//						success: function(data) {
+//							alert(data);
+////								if (data.success == "True") {
+////									$("form#upload_img").hide(gAnimationSpeed).queue(function() {
+////										$(this).remove();
+////									});
+////									$.noticeAdd({text: data.notice});
+////								} else {
+////									$("#errors").html(data.errors).hide().show(gAnimationSpeed);
+////								}
+//						},
+//						error: function(xhr) {
+//							alert('error' + xhr.error);
+//						},
+//						resetForm: true
+//					});
+
 					$("#upload_img").submit(function(e) {
-						var form = $(e.target);
-						alert($("#upload_img input").attr("value"));
+//						var form = $(e.target);
+//						alert($("#upload_img input").attr("value"));
 //						alert(form.serialize());
-						$.post("/req_proc/upload_img/", {"form": form.serialize()},
-							function(data) {
-								if (data.success == "True") {
-									$("form#upload_img").hide(gAnimationSpeed).queue(function() {
-										$(this).remove();
-									});
-									$.noticeAdd({text: data.notice});
-								} else {
-									$("#errors").html(data.errors).hide().show(gAnimationSpeed);
-								}
-						}, "json");
-						
+						$(this).ajaxSubmit({
+							url: "/req_proc/upload_img/",
+							success: function(data) {
+								alert(data);
+//								if (data.success == "True") {
+//									$("form#upload_img").hide(gAnimationSpeed).queue(function() {
+//										$(this).remove();
+//									});
+//									$.noticeAdd({text: data.notice});
+//								} else {
+//									$("#errors").html(data.errors).hide().show(gAnimationSpeed);
+//								}
+							}, 
+							dataType: "json"
+						});
+
 						return false;
 					});
 	

@@ -20,3 +20,6 @@ $.clear_form_elements = function clear_form_elements(element) {
         }
     });
 }
+
+$(document).ready(function() {
+})

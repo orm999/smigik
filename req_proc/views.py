@@ -31,6 +31,7 @@ def index( request ):
     return render_to_response( 'req_proc/base_index.html', {'req_list': flat_file_list, 'form': form} )
 
 def upload_img( request ):
+    print( request.method )
     if request.method == 'POST':
         url = request.POST.get( 'form', '' )
         unq_url = urllib.unquote( str( url ) )
@@ -45,15 +46,17 @@ def upload_img( request ):
             img = ImgMarked()
             img.save()
 
-        notice = 'Изображение {0} загружено'.format( img )
-        response = simplejson.dumps( {'success': 'True', 'notice': notice, 'html': 'hi'} )
+#        notice = 'Изображение {0} загружено'.format( img )
+        response = '<textarea>' + simplejson.dumps( {'success': 'True', 'notice': 'hi', 'html': 'hi', 'error': 'errors'} ) \
+            + '</textarea>'
     else:
         form = ImgMarkedForm()
         html = render_to_string( '_form.html', {'id': 'upload_img', 'form': form,
-            'submit_val': 'Изображение промаркировано'} )
+            'submit_val': 'Изображение промаркировано', 'legend': 'Загрузить изображение'} )
         response = simplejson.dumps( {'success': 'True', 'html': html} )
 
     if request.is_ajax():
+        print( response )
         return HttpResponse( response, content_type='application/javascript' )
 
 def upload_cert( request ):

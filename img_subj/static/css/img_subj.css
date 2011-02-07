@@ -1,2 +1,11 @@
 body {
 }
+
+label {
+	width: 80px;
+	float: left;
+	margin-right: 0.5em;
+	padding-top: 0.2em;
+	text-align: right;
+	font-weight: bold;
+}

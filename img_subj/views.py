@@ -59,7 +59,7 @@ def index( request ):
         form = ImgSubjForm()
         subj_img_list = ImgSubj.objects.all()
         return render_to_response( 'img_subj/base_index.html',
-            {'form': form, 'subj_img_list': subj_img_list}
+            {'form': form, 'subj_img_list': subj_img_list, 'legend': 'Тематики изображений'}
         )
 
 def genOption( subj ):

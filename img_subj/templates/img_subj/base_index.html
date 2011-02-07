@@ -10,12 +10,15 @@
 
 {% block content %}
 <form id="save_subj" action="" method="post">
-	<strong>{{ form.subject.label_tag }}:</strong> {{ form.subject }}
-	<select id="subj_select">
-		<option id="0">- Добавить тематику -</option>
-		{% for si in subj_img_list %}
-			<option id="{{ si.subj_id }}">{{ si.subject }}</option>
-		{% endfor %}
-	</select>
+	<fieldset>
+		<legend>{{ legend }}</legend>
+		{{ form.subject.label_tag }}: {{ form.subject }}
+		<select id="subj_select">
+			<option id="0">- Добавить тематику -</option>
+			{% for si in subj_img_list %}
+				<option id="{{ si.subj_id }}">{{ si.subject }}</option>
+			{% endfor %}
+		</select>
+	</fieldset>
 </form>
 {% endblock %}
