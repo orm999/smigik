@@ -121,8 +121,8 @@ INSTALLED_APPS = (
     'home',
     'dev_info',
     'img_subj',
-    'help_info',
     'req_proc',
+    'reg_img',
  )
 
 # A sample logging configuration. The only tangible logging

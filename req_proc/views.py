@@ -58,6 +58,8 @@ def upload_img( request ):
     if request.is_ajax():
         print( response )
         return HttpResponse( response, content_type='application/javascript' )
+    else:
+        assert False
 
 def upload_cert( request ):
     if request.method == 'POST':

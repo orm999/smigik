@@ -1,0 +1,6 @@
+<form action="{% url reg_img_index %}" method="post">
+  <div id="add_errors"></div>
+    {% csrf_token %}
+    <table>{{form.as_table}}</table>
+  <input type="submit" value="Подать">  
+</form>

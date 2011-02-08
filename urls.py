@@ -21,8 +21,8 @@ urlpatterns += patterns( '',
     ( r'^$', include( 'home.urls' ) ),
     ( r'^dev_info/', include( 'dev_info.urls' ) ),
     ( r'^img_subj/', include( 'img_subj.urls' ) ),
-    ( r'^help_info/', include( 'help_info.urls' ) ),
     ( r'^req_proc/', include( 'req_proc.urls' ) ),
+    ( r'^reg_img/', include( 'reg_img.urls' ) ),
  )
 
 #if settings.DEBUG:
